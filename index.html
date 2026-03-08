@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>BLADE & CO. — Premium Barbershop</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --black: #0a0a08;
+      --cream: #f5f0e8;
+      --gold: #c9a84c;
+      --gold-light: #e6c97a;
+      --dark: #141410;
+      --mid: #1e1e18;
+      --muted: #888878;
+      --white: #fefefe;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--black);
+      color: var(--cream);
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    /* Custom cursor */
+    .cursor {
+      width: 12px; height: 12px;
+      background: var(--gold);
+      border-radius: 50%;
+      position: fixed;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: width .2s, height .2s, background .2s;
+    }
+    .cursor-ring {
+      width: 36px; height: 36px;
+      border: 1px solid var(--gold);
+      border-radius: 50%;
+      position: fixed;
+      pointer-events: none;
+      z-index: 9998;
+      transform: translate(-50%, -50%);
+      transition: all .12s ease-out;
+      opacity: .6;
+    }
+    body:hover .cursor { opacity: 1; }
+
+    /* NOISE OVERLAY */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.04'/%3E%3C/svg%3E");
+      background-size: 200px 200px;
+      pointer-events: none;
+      z-index: 100;
+      opacity: .4;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0;
+      z-index: 500;
+      padding: 28px 60px;
+      display: flex; align-items: center; justify-content: space-between;
+      background: linear-gradient(to bottom, rgba(10,10,8,.95) 0%, transparent 100%);
+    }
+    .nav-logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2rem;
+      letter-spacing: .15em;
+      color: var(--cream);
+    }
+    .nav-logo span { color: var(--gold); }
+    .nav-links { display: flex; gap: 40px; list-style: none; }
+    .nav-links a {
+      text-decoration: none;
+      color: var(--muted);
+      font-size: .8rem;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      transition: color .3s;
+      font-weight: 500;
+    }
+    .nav-links a:hover { color: var(--gold); }
+    .nav-cta {
+      background: var(--gold);
+      color: var(--black);
+      border: none;
+      padding: 12px 28px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: .75rem;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      font-weight: 500;
+      cursor: none;
+      transition: background .3s, transform .2s;
+    }
+    .nav-cta:hover { background: var(--gold-light); transform: translateY(-1px); }
+
+    /* HERO */
+    .hero {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-left {
+      display: flex; flex-direction: column; justify-content: center;
+      padding: 160px 60px 100px;
+      position: relative; z-index: 2;
+    }
+    .hero-tag {
+      font-size: .7rem;
+      letter-spacing: .25em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 28px;
+      display: flex; align-items: center; gap: 14px;
+    }
+    .hero-tag::before {
+      content: ''; display: block;
+      width: 40px; height: 1px; background: var(--gold);
+    }
+    .hero-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(3.5rem, 6vw, 6.5rem);
+      font-weight: 900;
+      line-height: .92;
+      color: var(--cream);
+      margin-bottom: 32px;
+    }
+    .hero-title em {
+      font-style: italic;
+      color: var(--gold);
+    }
+    .hero-desc {
+      color: var(--muted);
+      font-size: 1rem;
+      line-height: 1.7;
+      max-width: 380px;
+      margin-bottom: 48px;
+    }
+    .hero-btns { display: flex; gap: 20px; align-items: center; }
+    .btn-primary {
+      background: var(--gold);
+      color: var(--black);
+      border: none;
+      padding: 18px 40px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: .8rem;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      font-weight: 500;
+      cursor: none;
+      transition: all .3s;
+      text-decoration: none;
+      display: inline-block;
+    }
+    .btn-primary:hover { background: var(--gold-light); transform: translateY(-2px); }
+    .btn-secondary {
+      color: var(--cream);
+      font-size: .8rem;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      text-decoration: none;
+      border-bottom: 1px solid var(--gold);
+      padding-bottom: 3px;
+      transition: color .3s;
+    }
+    .btn-secondary:hover { color: var(--gold); }
+
+    .hero-stats {
+      position: absolute; bottom: 60px; left: 60px;
+      display: flex; gap: 50px;
+    }
+    .stat-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: var(--gold);
+    }
+    .stat-label {
+      font-size: .72rem;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    .hero-right {
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-img-wrap {
+      position: absolute; inset: 0;
+      background: var(--mid);
+    }
+    .hero-img-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to right, var(--black) 0%, transparent 30%),
+                  linear-gradient(to top, var(--black) 0%, transparent 40%);
+      z-index: 1;
+    }
+    .hero-bg-text {
+      position: absolute;
+      right: -20px; top: 50%;
+      transform: translateY(-50%) rotate(90deg);
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 14rem;
+      color: rgba(201,168,76,.05);
+      letter-spacing: .05em;
+      white-space: nowrap;
+      z-index: 0;
+      user-select: none;
+    }
+    .hero-visual {
+      position: absolute; inset: 0;
+      z-index: 0;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .barber-pole {
+      width: 80px; height: 400px;
+      border-radius: 40px;
+      background: repeating-linear-gradient(
+        -45deg,
+        #c9a84c 0px, #c9a84c 20px,
+        #f5f0e8 20px, #f5f0e8 40px,
+        #8b1a1a 40px, #8b1a1a 60px
+      );
+      background-size: 85px 85px;
+      animation: scrollStripes 4s linear infinite;
+      box-shadow: 0 0 60px rgba(201,168,76,.15), inset 0 0 30px rgba(0,0,0,.3);
+      opacity: .35;
+    }
+    @keyframes scrollStripes {
+      from { background-position: 0 0; }
+      to { background-position: 0 85px; }
+    }
+
+    /* TICKER */
+    .ticker {
+      background: var(--gold);
+      color: var(--black);
+      padding: 14px 0;
+      overflow: hidden;
+      position: relative;
+    }
+    .ticker-inner {
+      display: flex; white-space: nowrap;
+      animation: ticker 25s linear infinite;
+    }
+    .ticker-item {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.1rem;
+      letter-spacing: .2em;
+      padding: 0 40px;
+    }
+    .ticker-dot { color: rgba(0,0,0,.4); }
+    @keyframes ticker {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+
+    /* SERVICES */
+    section { padding: 120px 60px; }
+    .section-header { margin-bottom: 80px; }
+    .section-tag {
+      font-size: .7rem;
+      letter-spacing: .25em;
+      text-transform: uppercase;
+      color: var(--gold);
+      display: flex; align-items: center; gap: 14px;
+      margin-bottom: 20px;
+    }
+    .section-tag::before {
+      content: ''; display: block;
+      width: 40px; height: 1px; background: var(--gold);
+    }
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.5rem, 4vw, 4rem);
+      font-weight: 900;
+      line-height: 1.05;
+    }
+    .section-title em { font-style: italic; color: var(--gold); }
+
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+    }
+    .service-card {
+      background: var(--mid);
+      padding: 50px 40px;
+      position: relative;
+      overflow: hidden;
+      transition: background .4s;
+      border-top: 1px solid rgba(201,168,76,.15);
+    }
+    .service-card::before {
+      content: '';
+      position: absolute; bottom: 0; left: 0;
+      width: 100%; height: 3px;
+      background: var(--gold);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform .4s;
+    }
+    .service-card:hover { background: #252520; }
+    .service-card:hover::before { transform: scaleX(1); }
+    .service-num {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 5rem;
+      color: rgba(201,168,76,.08);
+      position: absolute; top: 20px; right: 30px;
+      line-height: 1;
+    }
+    .service-icon {
+      width: 48px; height: 48px;
+      margin-bottom: 28px;
+      color: var(--gold);
+    }
+    .service-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 14px;
+    }
+    .service-desc {
+      color: var(--muted);
+      font-size: .88rem;
+      line-height: 1.7;
+      margin-bottom: 28px;
+    }
+    .service-price {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--gold);
+    }
+    .service-price span {
+      font-family: 'DM Sans', sans-serif;
+      font-size: .75rem;
+      color: var(--muted);
+      vertical-align: super;
+      margin-right: 4px;
+    }
+
+    /* ABOUT */
+    .about {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 100px;
+      align-items: center;
+      background: var(--dark);
+    }
+    .about-visual {
+      position: relative; height: 600px;
+    }
+    .about-img-main {
+      position: absolute;
+      top: 0; left: 0;
+      width: 70%; height: 80%;
+      background: var(--mid);
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden;
+    }
+    .about-img-accent {
+      position: absolute;
+      bottom: 0; right: 0;
+      width: 50%; height: 55%;
+      background: var(--gold);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .about-badge {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 120px; height: 120px;
+      border: 1px solid var(--gold);
+      border-radius: 50%;
+      background: var(--black);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      z-index: 2;
+    }
+    .about-badge-year {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2.5rem;
+      color: var(--gold);
+      line-height: 1;
+    }
+    .about-badge-label {
+      font-size: .6rem;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .scissors-icon {
+      font-size: 4rem;
+      opacity: .2;
+    }
+    .razor-icon {
+      font-size: 3rem;
+      color: var(--black);
+      opacity: .6;
+    }
+
+    .about-text .section-desc {
+      color: var(--muted); line-height: 1.8; margin: 28px 0 40px;
+    }
+
+    .features-list { list-style: none; display: flex; flex-direction: column; gap: 18px; }
+    .features-list li {
+      display: flex; align-items: flex-start; gap: 16px;
+      font-size: .9rem; color: var(--cream);
+    }
+    .features-list li::before {
+      content: '✦';
+      color: var(--gold);
+      font-size: .7rem;
+      margin-top: 4px;
+      flex-shrink: 0;
+    }
+
+    /* TEAM */
+    .team { background: var(--black); }
+    .team-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 30px;
+      margin-top: 80px;
+    }
+    .barber-card {
+      position: relative; overflow: hidden;
+      background: var(--mid);
+    }
+    .barber-photo {
+      height: 320px;
+      background: var(--dark);
+      display: flex; align-items: center; justify-content: center;
+      position: relative; overflow: hidden;
+    }
+    .barber-silhouette {
+      width: 120px; height: 200px;
+      background: rgba(201,168,76,.08);
+      clip-path: polygon(30% 0%, 70% 0%, 85% 25%, 80% 100%, 20% 100%, 15% 25%);
+    }
+    .barber-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, var(--mid) 0%, transparent 60%);
+    }
+    .barber-info { padding: 28px 30px; }
+    .barber-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.3rem; font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .barber-role {
+      font-size: .75rem;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--gold);
+    }
+    .barber-spec {
+      color: var(--muted); font-size: .83rem;
+      margin-top: 12px; line-height: 1.6;
+    }
+    .barber-card:hover .barber-photo { background: #252520; }
+
+    /* BOOKING */
+    .booking {
+      background: var(--gold);
+      color: var(--black);
+      text-align: center;
+      padding: 120px 60px;
+    }
+    .booking .section-tag { color: rgba(0,0,0,.5); justify-content: center; }
+    .booking .section-tag::before { background: rgba(0,0,0,.3); }
+    .booking .section-title { color: var(--black); }
+    .booking .section-title em { color: rgba(0,0,0,.6); }
+    .booking-desc {
+      color: rgba(0,0,0,.6); font-size: 1rem;
+      max-width: 500px; margin: 24px auto 48px;
+      line-height: 1.7;
+    }
+    .booking-form {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr auto;
+      gap: 2px;
+      max-width: 900px; margin: 0 auto;
+    }
+    .form-field {
+      background: rgba(0,0,0,.12);
+      padding: 20px 24px;
+      border: none; outline: none;
+      font-family: 'DM Sans', sans-serif;
+      font-size: .85rem;
+      color: var(--black);
+      width: 100%;
+    }
+    .form-field::placeholder { color: rgba(0,0,0,.4); }
+    select.form-field option { background: var(--cream); }
+    .btn-book {
+      background: var(--black);
+      color: var(--gold);
+      border: none;
+      padding: 20px 36px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: .8rem;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      font-weight: 500;
+      cursor: none;
+      transition: all .3s;
+      white-space: nowrap;
+    }
+    .btn-book:hover { background: #1a1a12; }
+
+    /* TESTIMONIALS */
+    .testimonials { background: var(--dark); }
+    .testimonials-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 30px; margin-top: 80px;
+    }
+    .testimonial-card {
+      background: var(--mid);
+      padding: 40px;
+      position: relative;
+    }
+    .testimonial-card::before {
+      content: '"';
+      font-family: 'Playfair Display', serif;
+      font-size: 8rem; font-weight: 900;
+      color: rgba(201,168,76,.1);
+      position: absolute; top: 10px; right: 20px;
+      line-height: 1;
+    }
+    .stars { color: var(--gold); font-size: .9rem; margin-bottom: 20px; }
+    .testimonial-text {
+      color: var(--cream); font-size: .9rem;
+      line-height: 1.75; margin-bottom: 28px;
+      font-style: italic;
+    }
+    .testimonial-author { font-weight: 500; font-size: .85rem; }
+    .testimonial-loc { color: var(--muted); font-size: .78rem; margin-top: 4px; }
+
+    /* FOOTER */
+    footer {
+      background: var(--black);
+      border-top: 1px solid rgba(201,168,76,.15);
+      padding: 80px 60px 40px;
+    }
+    .footer-top {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 60px; margin-bottom: 60px;
+    }
+    .footer-brand .nav-logo { font-size: 2.5rem; margin-bottom: 20px; display: block; }
+    .footer-brand p { color: var(--muted); font-size: .88rem; line-height: 1.7; max-width: 280px; }
+    .footer-col h4 {
+      font-size: .7rem;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 24px;
+    }
+    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+    .footer-col a {
+      color: var(--muted); text-decoration: none;
+      font-size: .88rem; transition: color .3s;
+    }
+    .footer-col a:hover { color: var(--gold); }
+    .footer-bottom {
+      border-top: 1px solid rgba(255,255,255,.06);
+      padding-top: 30px;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .footer-bottom p { color: var(--muted); font-size: .78rem; }
+
+    /* ANIMATIONS */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity .8s ease, transform .8s ease;
+    }
+    .fade-up.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .delay-1 { transition-delay: .1s; }
+    .delay-2 { transition-delay: .2s; }
+    .delay-3 { transition-delay: .3s; }
+    .delay-4 { transition-delay: .4s; }
+    .delay-5 { transition-delay: .5s; }
+
+    @media (max-width: 900px) {
+      nav { padding: 20px 24px; }
+      .nav-links, .nav-cta { display: none; }
+      .hero { grid-template-columns: 1fr; min-height: auto; }
+      .hero-left { padding: 120px 24px 60px; }
+      .hero-right { height: 300px; }
+      .hero-stats { position: static; margin-top: 40px; flex-wrap: wrap; gap: 30px; }
+      section { padding: 80px 24px; }
+      .services-grid, .team-grid, .testimonials-grid { grid-template-columns: 1fr; }
+      .about { grid-template-columns: 1fr; gap: 40px; }
+      .about-visual { height: 300px; }
+      .booking-form { grid-template-columns: 1fr; }
+      .footer-top { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">BLADE<span>&</span>CO.</div>
+  <ul class="nav-links">
+    <li><a href="#services">Services</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#team">Barbers</a></li>
+    <li><a href="#testimonials">Reviews</a></li>
+  </ul>
+  <button class="nav-cta" onclick="document.getElementById('booking').scrollIntoView({behavior:'smooth'})">Book Now</button>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-left">
+    <div class="hero-tag">Est. 1998 — Downtown</div>
+    <h1 class="hero-title">
+      Sharp Cuts.<br>
+      <em>Refined</em><br>
+      Craft.
+    </h1>
+    <p class="hero-desc">Where tradition meets precision. We don't just cut hair — we sculpt confidence with every snip, fade, and shave.</p>
+    <div class="hero-btns">
+      <a href="#booking" class="btn-primary">Book Appointment</a>
+      <a href="#services" class="btn-secondary">View Services</a>
+    </div>
+    <div class="hero-stats">
+      <div>
+        <div class="stat-num">25+</div>
+        <div class="stat-label">Years of craft</div>
+      </div>
+      <div>
+        <div class="stat-num">8K+</div>
+        <div class="stat-label">Happy clients</div>
+      </div>
+      <div>
+        <div class="stat-num">4.9★</div>
+        <div class="stat-label">Avg. rating</div>
+      </div>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="hero-img-wrap">
+      <div class="hero-bg-text">BLADE</div>
+      <div class="hero-visual">
+        <div class="barber-pole"></div>
+      </div>
+    </div>
+    <div class="hero-img-overlay"></div>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker">
+  <div class="ticker-inner">
+    <span class="ticker-item">HAIRCUT <span class="ticker-dot">✦</span></span>
+    <span class="ticker-item">BEARD TRIM <span class="ticker-dot">✦</span></span>
+    <span class="ticker-item">HOT TOWEL SHAVE <span class="ticker-dot">✦</span></span>
+    <span class="ticker-item">FADE & TAPER <span class="ticker-dot">✦</span></span>
